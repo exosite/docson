@@ -1,0 +1,9 @@
+{
+  "name": "docson",
+  "version": "0.1.0",
+  "description": "JSON documentation for Pegasus service",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/exosite/docson.git"
+  }
+}
