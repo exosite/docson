@@ -1,6 +1,6 @@
 {
   "name": "docson",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JSON documentation for Pegasus service",
   "repository": {
     "type" : "git",

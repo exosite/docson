@@ -16,7 +16,7 @@
 
 var docson = docson || {};
 
-docson.templateBaseUrl="templates";
+docson._templateBaseUrl="templates";
 
 define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib/marked", "lib/traverse"], function(jquery, handlebars, highlight, jsonpointer, marked) {
 
@@ -310,21 +310,34 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
     });
 
     function init() {
-        $.when( $.get(docson.templateBaseUrl+"/box.html").done(function(content) {
-            source = content
-            boxTemplate = Handlebars.compile(source);
-        }), $.get(docson.templateBaseUrl+"/signature.html").done(function(content) {
-            source = content
-            signatureTemplate = Handlebars.compile(source);
-        })).always(function() {
-            ready.resolve();
-        });
+      ready = $.Deferred();
+      $.when( $.get(docson.templateBaseUrl+"/box.html").done(function(content) {
+          source = content
+          boxTemplate = Handlebars.compile(source);
+      }), $.get(docson.templateBaseUrl+"/signature.html").done(function(content) {
+          source = content
+          signatureTemplate = Handlebars.compile(source);
+      }))
+      .done(ready.resolve.bind(ready))
+      .fail(ready.reject.bind(ready));
     };
+
+    Object.defineProperty(docson, "templateBaseUrl", {
+      get: function () {
+        return this._templateBaseUrl;
+      },
+      set: function (value) {
+        this._templateBaseUrl = value;
+        init();
+      }
+    });
+
+    init();
 
     docson.doc = function(element, schema, ref, baseUrl) {
         var d = $.Deferred();
         if(baseUrl === undefined) baseUrl='';
-        if (ready.state() !== "resolved") init();
+        if (ready.state() === "rejected") init();
         ready.done(function() {
             if(typeof element == "string") {
                 element = $("#"+element);
