@@ -324,7 +324,7 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
     docson.doc = function(element, schema, ref, baseUrl) {
         var d = $.Deferred();
         if(baseUrl === undefined) baseUrl='';
-        init();
+        if (ready.state() !== "resolved") init();
         ready.done(function() {
             if(typeof element == "string") {
                 element = $("#"+element);
@@ -473,7 +473,7 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                                 if(content) {
                                     refs[item] = content;
                                     renderBox();
-                                    resolveRefsReentrant(content); 
+                                    resolveRefsReentrant(content);
                                 }
                             });
                         }
@@ -499,10 +499,10 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                     }
                 });
             };
-            
+
             resolveRefsReentrant(schema);
             renderBox();
-            
+
             d.resolve();
         })
         return d.promise();
